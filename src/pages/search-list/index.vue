@@ -3,7 +3,7 @@
     <div class="input-wrapper">
       <div class="search-box">
         <!-- mpvue中可以使用原生小程序组件，下面使用icon组件 -->
-        <icon type="search" size="16"/>搜索
+        <icon type="search" size="16"/>{{keyword}}
       </div>
     </div>
 
@@ -45,7 +45,8 @@
         currentIndex: 0,
         pagenum: 1, // 默认展示第一页
         pagesize: 10, // 每页默认10条
-        goodsList: []
+        goodsList: [],
+        keyword: ''
       };
     },
     methods: {
@@ -56,6 +57,7 @@
     // 小程序原生的生命周期函数，照样能在mpvue中使用
     onLoad(options) {
       // console.log(options);
+      this.keyword = options.query
       request.get("https://www.zhengzhicheng.cn/api/public/v1/goods/search", {
         query: options.query,
         pagenum: this.pagenum,
