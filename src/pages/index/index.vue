@@ -8,48 +8,43 @@
     </view>
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" :autoplay="true" interval="2000">
-      <block v-for="(item, index) in sildeList" :key="index">
+      <block v-for="(item, index) in sliderList" :key="index">
         <swiper-item>
-          <img :src="item" class="slide-image" mode="aspectFill">
+          <img :src="item.image_src" class="slide-image" mode="aspectFill">
         </swiper-item>
       </block>
     </swiper>
+
     <!-- 分类导航 -->
     <view class="cate-nav">
       <img
-        src="https://api.zbztb.cn/pyg/icon_index_nav_4@2x.png"
+        :src="item.image_src"
         class="slide-image"
         mode="aspectFill"
-        v-for="(item, index) in 4"
+        v-for="(item, index) in navList"
         :key="index"
       >
     </view>
+
     <!-- 楼层 -->
     <view class="floor">
       <!-- 每一个楼层 -->
-      <view class="floor-item">
+      <view class="floor-item" v-for="(item, index) in floorList" :key="index">
         <view class="floor-title">
-          <img
-            src="https://api.zbztb.cn/pyg/icon_index_nav_2@2x.png"
-            class="slide-image"
-            mode="aspectFill"
-          >
+          <img :src="item.floor_title.image_src" class="slide-image" mode="aspectFill">
         </view>
         <view class="floor-content">
           <view class="content-left">
-            <img
-              src="https://api.zbztb.cn/pyg/icon_index_nav_2@2x.png"
-              class="slide-image"
-              mode="aspectFill"
-            >
+            <img :src="item.product_list[0].image_src" class="slide-image" mode="aspectFill">
           </view>
           <view class="content-right">
             <img
-              src="https://api.zbztb.cn/pyg/icon_index_nav_2@2x.png"
+              :src="subitem.image_src"
+              v-if="idx !== 0"
               class="slide-image"
               mode="aspectFill"
-              v-for="(item, index) in 4"
-              :key="index"
+              v-for="(subitem, idx) in item.product_list"
+              :key="idx"
             >
           </view>
         </view>
@@ -62,12 +57,47 @@
   export default {
     data() {
       return {
-        sildeList: [
-          "https://api.zbztb.cn/pyg/banner1.png",
-          "https://api.zbztb.cn/pyg/banner2.png",
-          "https://api.zbztb.cn/pyg/banner3.png"
-        ]
+        sliderList: [], // 轮播图数组
+        navList: [], // 导航分类
+        floorList: [] // 楼层列表
       };
+    },
+    mounted() {
+      this.getSliderList();
+      this.getCates();
+      this.getFloor();
+    },
+    methods: {
+      // 获取轮播图数据
+      getSliderList() {
+        wx.request({
+          url: "https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata", // 仅为示例，并非真实的接口地址
+          data: {},
+          success: res => {
+            this.sliderList = res.data.message;
+          }
+        });
+      },
+      // 获取导航分类
+      getCates() {
+        wx.request({
+          url: "https://www.zhengzhicheng.cn/api/public/v1/home/catitems", // 仅为示例，并非真实的接口地址
+          data: {},
+          success: res => {
+            this.navList = res.data.message;
+          }
+        });
+      },
+      // 获取楼层
+      getFloor() {
+        wx.request({
+          url: "https://www.zhengzhicheng.cn/api/public/v1/home/floordata", // 仅为示例，并非真实的接口地址
+          data: {},
+          success: res => {
+            this.floorList = res.data.message;
+          }
+        });
+      }
     }
   };
 </script>
@@ -102,8 +132,8 @@
     justify-content: space-around;
     padding: 15rpx 0;
     image {
-      width: 150rpx;
-      height: 180rpx;
+      width: 128rpx;
+      height: 140rpx;
     }
   }
 
@@ -111,10 +141,11 @@
     .floor-title {
       image {
         width: 750rpx;
-        height: 90rpx;
+        height: 60rpx;
       }
     }
     .floor-content {
+      padding: 10rpx 20rpx;
       image {
         border-radius: 4px;
       }
@@ -122,6 +153,7 @@
       .content-left {
         display: flex;
         align-items: center;
+        margin-right: 15rpx;
         image {
           width: 150rpx * $unit;
           height: 250rpx * $unit;
@@ -131,7 +163,7 @@
         flex: 1;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: space-between;
         align-content: space-between;
         image {
           width: 155rpx * $unit;
