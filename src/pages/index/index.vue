@@ -1,56 +1,67 @@
 <template>
-  <view>
-    <view class="input-wrapper">
-      <view class="search-box">
+  <div>
+    <div class="input-wrapper">
+      <div class="search-box">
         <!-- mpvue中可以使用原生小程序组件，下面使用icon组件 -->
         <icon type="search" size="16"/>搜索
-      </view>
-    </view>
+      </div>
+    </div>
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" :autoplay="true" interval="2000">
       <block v-for="(item, index) in sliderList" :key="index">
         <swiper-item>
-          <img :src="item.image_src" class="slide-image" mode="aspectFill">
+          <image 
+            :src="item.image_src" 
+            class="slide-image" 
+            mode="aspectFill"
+          ></image>
         </swiper-item>
       </block>
     </swiper>
 
     <!-- 分类导航 -->
-    <view class="cate-nav">
-      <img
+    <div class="cate-nav">
+      <image
         :src="item.image_src"
         class="slide-image"
         mode="aspectFill"
         v-for="(item, index) in navList"
         :key="index"
-      >
-    </view>
+      ></image>
+    </div>
 
     <!-- 楼层 -->
-    <view class="floor">
+    <div class="floor">
       <!-- 每一个楼层 -->
-      <view class="floor-item" v-for="(item, index) in floorList" :key="index">
-        <view class="floor-title">
-          <img :src="item.floor_title.image_src" class="slide-image" mode="aspectFill">
-        </view>
-        <view class="floor-content">
-          <view class="content-left">
-            <img :src="item.product_list[0].image_src" class="slide-image" mode="aspectFill">
-          </view>
-          <view class="content-right">
-            <img
+      <div class="floor-item" v-for="(item, index) in floorList" :key="index">
+        <div class="floor-title">
+          <image 
+            :src="item.floor_title.image_src" 
+            class="slide-image" 
+            mode="aspectFill"
+          ></image>
+        </div>
+        <div class="floor-content">
+          <div class="content-left">
+            <image 
+              :src="item.product_list[0].image_src" class="slide-image" 
+              mode="aspectFill"
+            ></image>
+          </div>
+          <div class="content-right">
+            <image
               :src="subitem.image_src"
               v-if="idx !== 0"
               class="slide-image"
               mode="aspectFill"
               v-for="(subitem, idx) in item.product_list"
               :key="idx"
-            >
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
+            ></image>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -64,34 +75,35 @@
       };
     },
     mounted() {
-      this.getSliderList();
-      this.getCates();
-      this.getFloor();
+      this.getData();
     },
     methods: {
-      // 获取轮播图数据
-      getSliderList() {
-        request(
-          "https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata"
-        ).then(res => {
+      // 获取轮播图/获取分类/获取楼层
+      async getData() {
+        try {
+          let res = await request(
+            "https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata"
+          );
           this.sliderList = res.data.message;
-        });
-      },
-      // 获取导航分类
-      getCates() {
-        request("https://www.zhengzhicheng.cn/api/public/v1/home/catitems").then(
-          res => {
-            this.navList = res.data.message;
-          }
-        );
-      },
-      // 获取楼层
-      getFloor() {
-        request("https://www.zhengzhicheng.cn/api/public/v1/home/floordata").then(
-          res => {
-            this.floorList = res.data.message;
-          }
-        );
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          let res1 = await request(
+            "https://www.zhengzhicheng.cn/api/public/v1/home/catitems"
+          );
+          this.navList = res1.data.message;
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          let res2 = await request(
+            "https://www.zhengzhicheng.cn/api/public/v1/home/floordata"
+          );
+          this.floorList = res2.data.message;
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
@@ -146,21 +158,23 @@
       }
       display: flex;
       .content-left {
+        flex: 1;
         display: flex;
         align-items: center;
-        margin-right: 15rpx;
+        margin-right: 8rpx;
         image {
           width: 150rpx * $unit;
           height: 250rpx * $unit;
         }
       }
       .content-right {
-        flex: 1;
+        flex: 2;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         align-content: space-between;
         image {
+          border-bottom: 4rpx solid #fff;
           width: 155rpx * $unit;
           height: 125rpx * $unit;
         }
