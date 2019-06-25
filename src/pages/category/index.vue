@@ -18,8 +18,15 @@
           <div class="right-item-title">{{item.cat_name}}</div>
           <div class="right-item-list">
             <div class="right-item-brand" v-for="(subitem, index) in item.children" :key="index">
-              <image class="brand-image" :src="subitem.cat_icon" mode="aspectFill"></image>
-              <p class="brand-title">{{subitem.cat_name}}</p>
+              <!-- 通过navigator跳转 -->
+              <navigator :url="'/pages/search-list/main?query='+subitem.cat_name">
+                <image 
+                  class="brand-image"      
+                  :src="subitem.cat_icon" 
+                  mode="aspectFill"
+                ></image>
+                <p class="brand-title">{{subitem.cat_name}}</p>
+              </navigator>
             </div>
           </div>
         </div>
@@ -39,7 +46,7 @@
       return {
         currentIndex: 0, // 表示当前激活项的索引
         cates: [],
-        rightList: [] // 存放右侧商品数据的数       
+        rightList: [] // 存放右侧商品数据的数
       };
     },
     mounted() {

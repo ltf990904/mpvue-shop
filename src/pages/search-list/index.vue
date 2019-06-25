@@ -50,6 +50,10 @@
       handleTabclick(idx) {
         this.currentIndex = idx;
       }
+    },
+    // 小程序原生的生命周期函数，照样能在mpvue中使用
+    onLoad (options) {
+      console.log(options)
     }
   };
 </script>
