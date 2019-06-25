@@ -20,18 +20,16 @@
 
     <!-- 搜索列表 -->
     <div class="search-list">
-      <div class="brand-item" v-for="(item, index) in 6" :key="index">
+      <div class="brand-item" v-for="(item, index) in goodsList" :key="index">
         <div class="brand-img">
           <image
-            src="https://img.alicdn.com/bao/uploaded/TB2jhfveJLO8KJjSZFxXXaGEVXa_!!2777239404-0-daren.jpg_180x180xzq90.jpg_.webp"
+            :src="item.goods_small_logo"
             mode="aspectFill"
           ></image>
         </div>
         <div class="brand-info">
-          <div class="brand-title">666</div>
-          <div class="brand-price">
-            ￥<span>600.00</span>
-          </div>
+          <div class="brand-title">{{item.goods_name}}</div>
+          <div class="brand-price">￥<span>{{item.goods_price}}</span></div>
         </div>
       </div>
     </div>
@@ -39,11 +37,15 @@
 </template>
 
 <script>
+  import request from '@/utils/request'
   export default {
     data() {
       return {
         tabName: ["综合", "销量", "价格"],
-        currentIndex: 0
+        currentIndex: 0,
+        pagenum: 1, // 默认展示第一页
+        pagesize: 10, // 每页默认10条
+        goodsList: []
       };
     },
     methods: {
@@ -52,8 +54,16 @@
       }
     },
     // 小程序原生的生命周期函数，照样能在mpvue中使用
-    onLoad (options) {
-      console.log(options)
+    onLoad(options) {
+      // console.log(options);
+      request.get("https://www.zhengzhicheng.cn/api/public/v1/goods/search", {
+        query: options.query,
+        pagenum: this.pagenum,
+        pagesize: this.pagesize
+      }).then(res => {
+        // console.log(res);
+        this.goodsList = res.data.message.goods;
+      });
     }
   };
 </script>

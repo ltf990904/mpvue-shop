@@ -13,4 +13,9 @@ function request(url, method = 'GET', data = {}) {
   })
 }
 
+// 拓展request函数
+request.get = function (url, data = {}) {
+  return request(url, 'GET', data)
+}
+
 export default request
