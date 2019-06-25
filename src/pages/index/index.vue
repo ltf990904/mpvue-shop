@@ -54,6 +54,7 @@
 </template>
 
 <script>
+  import request from "../../utils/request.js";
   export default {
     data() {
       return {
@@ -70,33 +71,27 @@
     methods: {
       // 获取轮播图数据
       getSliderList() {
-        wx.request({
-          url: "https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata", // 仅为示例，并非真实的接口地址
-          data: {},
-          success: res => {
-            this.sliderList = res.data.message;
-          }
+        request(
+          "https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata"
+        ).then(res => {
+          this.sliderList = res.data.message;
         });
       },
       // 获取导航分类
       getCates() {
-        wx.request({
-          url: "https://www.zhengzhicheng.cn/api/public/v1/home/catitems", // 仅为示例，并非真实的接口地址
-          data: {},
-          success: res => {
+        request("https://www.zhengzhicheng.cn/api/public/v1/home/catitems").then(
+          res => {
             this.navList = res.data.message;
           }
-        });
+        );
       },
       // 获取楼层
       getFloor() {
-        wx.request({
-          url: "https://www.zhengzhicheng.cn/api/public/v1/home/floordata", // 仅为示例，并非真实的接口地址
-          data: {},
-          success: res => {
+        request("https://www.zhengzhicheng.cn/api/public/v1/home/floordata").then(
+          res => {
             this.floorList = res.data.message;
           }
-        });
+        );
       }
     }
   };
