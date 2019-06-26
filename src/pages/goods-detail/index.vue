@@ -4,11 +4,7 @@
     <swiper :indicator-dots="true" :autoplay="true" interval="2000">
       <block v-for="(item, index) in goodsDetail.pics" :key="index">
         <swiper-item>
-          <image
-            :src="item.pics_big"
-            class="slide-image"
-            mode="aspectFill"
-          ></image>
+          <image :src="item.pics_big" class="slide-image" mode="aspectFill"></image>
         </swiper-item>
       </block>
     </swiper>
@@ -32,6 +28,8 @@
     <!-- 商品详情 -->
     <div class="goods-detail">
       <h3>商品详情</h3>
+      <!-- 使用mpvue的时候是通过v-html指令渲染带标签的字符串 -->
+      <!-- 如果使用的是原生的话，可以使用wxParse这个第三方的工具 -->
       <div class="goods-content" v-html="goodsDetail.goods_introduce"></div>
     </div>
 
@@ -44,9 +42,9 @@
       </div>
       <navigator url="/pages/cart/main" open-type="switchTab" class="footer-left footer-common">
         <span class="iconfont icongouwuche"></span>
-        <span>购物车</span>     
+        <span>购物车</span>
       </navigator>
-      <div class="footer-right footer-common">
+      <div class="footer-right footer-common" @tap="addToCart">
         <span>加入购物车</span>
       </div>
       <div class="footer-right footer-common">
@@ -57,25 +55,60 @@
 </template>
 
 <script>
-  import request from '@/utils/request'
-export default {
-
-  data () {
-    return {
-      goodsDetail: {} // 商品详情
+  import request from "@/utils/request";
+  export default {
+    data() {
+      return {
+        goodsDetail: {}, // 商品详情
+        cartListPage: [] // 页面获取到的购物车数据
+      };
+    },
+    onLoad(options) {
+      this.getDetail(options);
+      // 1.1 首先先从本地读取购物车的数据
+      this.cartListPage = wx.getStorageSync("cartList") || [];
+    },
+    methods: {
+      // 获取详情数据
+      getDetail(options) {
+        request
+          .get("https://www.zhengzhicheng.cn/api/public/v1/goods/detail", {
+            goods_id: options.goods_id
+          })
+          .then(res => {
+            console.log(res);
+            this.goodsDetail = res.data.message;
+          });
+      },
+      // 点击加入购物车
+      addToCart() {
+        // 需要添加到数组中临时商品数据对象
+        let tempObj = {
+          goods_id: this.goodsDetail.goods_id,
+          selectStatus: true, // 商品选中状态，默认应该被选中
+          goods_small_logo: this.goodsDetail.goods_small_logo,
+          goods_name: this.goodsDetail.goods_name,
+          goods_price: this.goodsDetail.goods_price,
+          counts: 1 // 添加商品的数量，默认为1
+        };
+        // 1.2 点击加入购物的时候，用当前的商品数据和购物车中的对比，判断是否存在该商品，如果存在，就将该商品数量的counts + 1；如果不存在，就将该商品的信息直接push到数组中
+        // 这里可以利用数组的findIndex方法查找当前的商品id在数组中所对应的数据项的索引，如果能找到，就返回该索引值，如果找不到就返回 -1
+        let idx = this.cartListPage.findIndex(
+          item => item.goods_id === this.goodsDetail.goods_id
+        );
+        console.log(idx);
+        if (idx === -1) {
+          // 不存在
+          this.cartListPage.push(tempObj);
+        } else {
+          // 不存在
+          this.cartListPage[idx].counts += 1;
+        }
+        // 1.3 将新的数据重新保存到本地
+        wx.setStorageSync("cartList", this.cartListPage);
+      }
     }
-  },
-  onLoad (options) {
-    // console.log(options)
-    request.get('https://www.zhengzhicheng.cn/api/public/v1/goods/detail', {
-      goods_id: options.goods_id
-    })
-      .then(res => {
-        console.log(res)
-        this.goodsDetail = res.data.message
-      })
-  }
-}
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -128,7 +161,6 @@ export default {
   .goods-detail {
     border-top: 10px solid #f5f5f5;
     h3 {
-      color: #ff2d4a;
       padding: 20rpx;
       font-size: 22px;
     }
@@ -142,7 +174,6 @@ export default {
     height: 120rpx;
     display: flex;
     background: #fff;
-    border-top: 1px solid #f4f4f4;
     .footer-common {
       display: flex;
       flex-direction: column;
@@ -170,9 +201,6 @@ export default {
       &:last-child {
         background: #ff2d4a;
       }
-    }
-    .iconkefu, .icongouwuche{
-      font-size: 24px;
     }
   }
 </style>
