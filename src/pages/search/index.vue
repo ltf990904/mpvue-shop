@@ -41,7 +41,10 @@
         wx.navigateTo({
           url: "/pages/search-list/main?query=" + this.inputVal
         });
-        this.historyData.push(this.inputVal)
+        this.historyData.unshift(this.inputVal)
+        // 将数据添加进去之后，需要将数据去重，利用es6的Set类型
+        let mySet = new Set(this.historyData)
+        this.historyData = [...mySet]
         // 将用户输入的值添加到本地存储中
         wx.setStorageSync('historyData', this.historyData)
       }
