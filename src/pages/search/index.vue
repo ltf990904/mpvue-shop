@@ -57,7 +57,7 @@
         suggestions: [] // 搜索数据建议列表
       };
     },
-    onLoad() {
+    onShow () {
       // 页面加载先从本地获取数据，没有就给空数组
       this.historyData = wx.getStorageSync("historyData") || [];
     },

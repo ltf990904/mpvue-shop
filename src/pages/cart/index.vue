@@ -55,11 +55,11 @@
       <div class="footer-item item-center">
         <div>
           合计:
-          <span class="total-price">23232.00</span>
+          <span class="total-price">{{totalPrice}}</span>
         </div>
         <div class="express">包含运费</div>
       </div>
-      <div class="footer-item item-right">计算(3)</div>
+      <div class="footer-item item-right">计算({{totalCount}})</div>
     </div>
   </div>
 </template>
@@ -72,7 +72,8 @@
         addressPage: {} // 页面中的地址信息
       };
     },
-    onLoad() {
+    // 此处不能些onLoad,因为这个onLoad只会执行一次，如果购物车数据有更新，它不会再次执行，将它改为onShow
+    onShow() {
       // 2.1 首先从本地读取购物车数据，根据该数据判断是否有数据，如果有就展示数据，如果没有就显示购物车为空
       this.cartListPage = wx.getStorageSync("cartList") || [];
       this.addressPage = wx.getStorageSync("addressInfo") || {};
@@ -102,9 +103,30 @@
       }
     },
     computed: {
+      // 地址是否为空
       addressIsEmpty() {
         // Object.keys()获取对象中的key，将这些key组成一个数组，类似于['userName', 'telNumber', 'addressDetail']
         return Object.keys(this.addressPage).length === 0;
+      },
+      // 总数量
+      totalCount() {
+        let total = 0;
+        this.cartListPage.map(item => {
+          if (item.selectStatus) {
+            total += item.counts;
+          }
+        });
+        return total;
+      },
+      // 购物车商品总价格
+      totalPrice() {
+        let total = 0;
+        this.cartListPage.map(item => {
+          if (item.selectStatus) {
+            total += item.counts * item.goods_price;
+          }
+        });
+        return total;
       }
     }
   };

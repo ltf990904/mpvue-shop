@@ -60,20 +60,24 @@
     data() {
       return {
         goodsDetail: {}, // 商品详情
-        cartListPage: [] // 页面获取到的购物车数据
+        cartListPage: [], // 页面获取到的购物车数据
+        goods_id: 0
       };
     },
     onLoad(options) {
-      this.getDetail(options);
+      this.goods_id = options.goods_id
+    },
+    onShow () {
+      this.getDetail()
       // 1.1 首先先从本地读取购物车的数据
-      this.cartListPage = wx.getStorageSync("cartList") || [];
+      this.cartListPage = wx.getStorageSync('cartList') || []
     },
     methods: {
       // 获取详情数据
       getDetail(options) {
         request
           .get("https://www.zhengzhicheng.cn/api/public/v1/goods/detail", {
-            goods_id: options.goods_id
+            goods_id: this.goods_id
           })
           .then(res => {
             console.log(res);

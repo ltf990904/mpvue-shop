@@ -88,8 +88,11 @@
     // 小程序原生的生命周期函数，照样能在mpvue中使用
     onLoad(options) {
       // console.log(options);
-      this.keyword = options.query;
+      this.keyword = options.query || ''
       this.getSearchList();
+    },
+    onShow () {
+      this.getSearchList()
     },
     onUnload() {
       // 这句话的意思是在页面卸载时，将这个页面的数据重置以下
