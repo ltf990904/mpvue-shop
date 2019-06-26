@@ -87,6 +87,10 @@
       this.keyword = options.query;
       this.getSearchList();
     },
+    onUnload () {
+      // 这句话的意思是在页面卸载时，将这个页面的数据重置以下
+      Object.assign(this.$data, this.$options.data())
+    },
     // 上拉触底事件
     onReachBottom() {
       // console.log("触底了");
