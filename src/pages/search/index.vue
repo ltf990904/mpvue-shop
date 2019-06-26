@@ -47,6 +47,7 @@
 <script>
   // @符号是一个别名，代表src目录的绝对路径
   import request from "@/utils/request";
+  let timer = null;
   export default {
     data() {
       return {
@@ -76,14 +77,26 @@
       // 用户按键时触发的函数
       handleInput() {
         // console.log("你输入了");
-        request
-          .get("https://www.zhengzhicheng.cn/api/public/v1/goods/qsearch", {
-            query: this.inputVal
-          })
-          .then(res => {
-            // console.log(res);
-            this.suggestions = res.data.message;
-          });
+        // request
+        //   .get("https://www.zhengzhicheng.cn/api/public/v1/goods/qsearch", {
+        //     query: this.inputVal
+        //   })
+        //   .then(res => {
+        //     // console.log(res);
+        //     this.suggestions = res.data.message;
+        //   });
+        // 每次输入之前，应该先清掉原来的定时器
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          request
+            .get("https://www.zhengzhicheng.cn/api/public/v1/goods/qsearch", {
+              query: this.inputVal
+            })
+            .then(res => {
+              console.log(res);
+              this.suggestions = res.data.message;
+            });
+        }, 1000);
       },
       // 点击搜索建议跳转到详情
       handleSuggestionClick(id) {
