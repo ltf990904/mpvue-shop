@@ -2,10 +2,10 @@
   <div>
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" :autoplay="true" interval="2000">
-      <block v-for="(item, index) in 3" :key="index">
+      <block v-for="(item, index) in goodsDetail.pics" :key="index">
         <swiper-item>
           <image
-            src="https://img.alicdn.com/bao/uploaded/TB2sNftkpXXXXXvXpXXXXXXXXXX_!!1917052654.jpg_180x180xzq90.jpg_.webp"
+            :src="item.pics_big"
             class="slide-image"
             mode="aspectFill"
           ></image>
@@ -15,12 +15,12 @@
 
     <!-- 价格 -->
     <div class="goods-price">
-      <span>￥ 666</span>
+      <span>￥ {{goodsDetail.goods_price}}</span>
     </div>
 
     <!-- 商品标题 -->
     <div class="goods-title">
-      <div class="left-title">测试商品测试商品测试商品测试商品测试商品测试商品测试商品测试商品测试商品测试商品</div>
+      <div class="left-title">{{goodsDetail.goods_name}}</div>
       <div class="right-icon">
         <span class="iconfont iconxingxing"></span>
         <span>收藏</span>
@@ -32,7 +32,7 @@
     <!-- 商品详情 -->
     <div class="goods-detail">
       <h3>商品详情</h3>
-      <div class="goods-content">xdfsdfsdfsdfsdfsdfdsfafdasd</div>
+      <div class="goods-content" v-html="goodsDetail.goods_introduce"></div>
     </div>
 
     <!-- footer -->
@@ -41,10 +41,10 @@
         <span class="iconfont iconkefu"></span>
         <span>联系客服</span>
       </div>
-      <div class="footer-left footer-common">
+      <navigator url="/pages/cart/main" open-type="switchTab" class="footer-left footer-common">
         <span class="iconfont icongouwuche"></span>
-        <span>购物车</span>
-      </div>
+        <span>购物车</span>     
+      </navigator>
       <div class="footer-right footer-common">
         <span>加入购物车</span>
       </div>
@@ -56,7 +56,25 @@
 </template>
 
 <script>
-  export default {};
+  import request from '@/utils/request'
+export default {
+
+  data () {
+    return {
+      goodsDetail: {} // 商品详情
+    }
+  },
+  onLoad (options) {
+    // console.log(options)
+    request.get('https://www.zhengzhicheng.cn/api/public/v1/goods/detail', {
+      goods_id: options.goods_id
+    })
+      .then(res => {
+        console.log(res)
+        this.goodsDetail = res.data.message
+      })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -108,6 +126,7 @@
   .goods-detail {
     border-top: 10px solid #f5f5f5;
     h3 {
+      color: #ff2d4a;
       padding: 20rpx;
       font-size: 22px;
     }

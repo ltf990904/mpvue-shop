@@ -19,12 +19,16 @@
     </div>
     <!-- 搜索列表 -->
     <div class="search-list">
-      <div class="brand-item" v-for="(item, index) in goodsList" :key="index">
+      <!-- 点击跳转到详情 -->
+      <navigator
+        :url="'/pages/goods-detail/main?goods_id=' + item.goods_id"
+        class="brand-item"
+        v-for="(item, index) in goodsList"
+        :key="index"
+      >
         <div class="brand-img">
-          <image 
-            :src="item.goods_small_logo" 
-            mode="aspectFill"
-          ></image>
+          <image :src="item.goods_small_logo" mode="aspectFill">
+          </image>
         </div>
         <div class="brand-info">
           <div class="brand-title">{{item.goods_name}}</div>
@@ -32,7 +36,7 @@
             ￥<span>{{item.goods_price}}</span>
           </div>
         </div>
-      </div>
+      </navigator>
     </div>
     <!-- 没有更多了 -->
     <div class="hasMore" v-if="hasMore">-到底了-</div>
@@ -59,26 +63,25 @@
         this.currentIndex = idx;
       },
       getSearchList() {
-        request
-          .get("https://www.zhengzhicheng.cn/api/public/v1/goods/search", {
-            // options的query字段名是category页面中跳转时定义的，那边定成什么名字，这边就写什么名字
-            query: this.keyword,
-            pagenum: this.pagenum,
-            pagesize: this.pagesize
-          })
-          .then(res => {
-            // console.log(res);
-            // 第一次请求成功之后，就把总的页码数算出来
-            if (!this.totalNum) {
-              this.totalNum = Math.ceil(res.data.message.total / this.pagesize);
-            }
-            if (this.totalNum === this.pagenum) {
-              this.hasMore = true;
-            }
-            // 不能用直接用新的数据替换掉原来的数据，应该将原来的数据和新的数据拼接起来
-            // this.goodsList = res.data.message.goods
-            this.goodsList = [...this.goodsList, ...res.data.message.goods];
-          });
+        request.get("https://www.zhengzhicheng.cn/api/public/v1/goods/search", {
+          // options的query字段名是category页面中跳转时定义的，那边定成什么名字，这边就写什么名字
+          query: this.keyword,
+          pagenum: this.pagenum,
+          pagesize: this.pagesize
+        })
+        .then(res => {
+          // console.log(res);
+          // 第一次请求成功之后，就把总的页码数算出来
+          if (!this.totalNum) {
+            this.totalNum = Math.ceil(res.data.message.total / this.pagesize);
+          }
+          if (this.totalNum === this.pagenum) {
+            this.hasMore = true;
+          }
+          // 不能用直接用新的数据替换掉原来的数据，应该将原来的数据和新的数据拼接起来
+          // this.goodsList = res.data.message.goods
+          this.goodsList = [...this.goodsList, ...res.data.message.goods];
+        });
       }
     },
     // 小程序原生的生命周期函数，照样能在mpvue中使用
@@ -87,9 +90,9 @@
       this.keyword = options.query;
       this.getSearchList();
     },
-    onUnload () {
+    onUnload() {
       // 这句话的意思是在页面卸载时，将这个页面的数据重置以下
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data());
     },
     // 上拉触底事件
     onReachBottom() {
