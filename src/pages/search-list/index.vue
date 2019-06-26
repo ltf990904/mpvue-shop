@@ -80,7 +80,8 @@
           }
           // 不能用直接用新的数据替换掉原来的数据，应该将原来的数据和新的数据拼接起来
           // this.goodsList = res.data.message.goods
-          this.goodsList = [...this.goodsList, ...res.data.message.goods];
+          // this.goodsList = [...this.goodsList, ...res.data.message.goods];
+          this.goodsList = this.goodsList.concat(res.data.message.goods)
         });
       }
     },

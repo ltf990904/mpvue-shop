@@ -1,6 +1,6 @@
 <template>
   <div class="input-wrapper">
-    <div class="search-box">
+    <div class="search-box" @click="jumpToSearchList">
       <!-- mpvue中可以使用原生小程序组件，下面使用icon组件 -->
       <icon type="search" size="16"/>搜索
     </div>
@@ -8,7 +8,15 @@
 </template>
 
 <script>
-  export default {};
+  export default {
+    methods: {
+      jumpToSearchList () {
+        wx.navigateTo({
+          url: '/pages/search-list/main'
+        })
+      }
+    }
+  };
 </script>
 
 <style lang="scss" scoped>
