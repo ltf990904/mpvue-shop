@@ -19,11 +19,12 @@
     <!-- 历史搜索标题 -->
     <div class="history-title">
       <h4>历史搜索</h4>
-      <icon type="clear" size="16"/>
+      <icon type="clear" size="16" @tap="clearHistoryData"/>
     </div>
 
     <!-- 搜索历史列表 -->
     <div class="history-list">
+      <span v-if="historyData.length===0">没有搜索历史</span>
       <span
         class="history-item"
         v-for="(item, index) in historyData"
@@ -74,17 +75,12 @@
         // 将用户输入的值添加到本地存储中
         wx.setStorageSync("historyData", this.historyData);
       },
-      // 用户按键时触发的函数
+      // 用户按键时触发的函数，但是需要注意，我并不是每次输入按键都去发一次请求，我只想要在连续按了按键的某一段事件后，发一次请求，这里的解决方案是利用防抖函数解决
       handleInput() {
-        // console.log("你输入了");
-        // request
-        //   .get("https://www.zhengzhicheng.cn/api/public/v1/goods/qsearch", {
-        //     query: this.inputVal
-        //   })
-        //   .then(res => {
-        //     // console.log(res);
-        //     this.suggestions = res.data.message;
-        //   });
+        // 如果用户输入的是空格，直接让他return，不允许发请求
+        if (!this.inputVal.trim()) {
+          return false;
+        }
         // 每次输入之前，应该先清掉原来的定时器
         clearTimeout(timer);
         timer = setTimeout(() => {
@@ -109,6 +105,13 @@
         wx.navigateTo({
           url: "/pages/search-list/main?query=" + name
         });
+      },
+      // 清除搜索历史
+      clearHistoryData() {
+        // 移除本地中保存的历史数据
+        wx.removeStorageSync("historyData");
+        // 页面中的历史数据置空
+        this.historyData = [];
       }
     }
   };
@@ -185,3 +188,4 @@
     }
   }
 </style>
+
