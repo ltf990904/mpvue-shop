@@ -37,7 +37,8 @@
 
     <!-- footer -->
     <div class="footer">
-      <div class="footer-left footer-common kefu">
+      <div class="footer-left footer-common">
+        <button open-type="contact">联系客服</button>
         <span class="iconfont iconkefu"></span>
         <span>联系客服</span>
       </div>
@@ -82,6 +83,7 @@ export default {
     height: 720rpx;
     .slide-image {
       height: 720rpx;
+      width: 750rpx;
     }
   }
   .goods-price {
@@ -152,6 +154,13 @@ export default {
       height: 120rpx;
       color: #9a999a;
       font-size: 16px;
+      button {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 20%;
+      }
     }
     .footer-right {
       width: 30%;
