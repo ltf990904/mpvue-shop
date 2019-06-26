@@ -8,15 +8,15 @@
     </div>
 
     <div class="cart-body" v-else>
-      <div class="empty-address">
-        <div class="add-btn">添加地址</div>
+      <div class="empty-address" v-if="addressIsEmpty">
+        <div class="add-btn" @tap="addAddress">添加地址</div>
       </div>
-      <div class="address">
+      <div class="address" v-else>
         <div class="user-info">
-          <span>收货人：xxxx</span>
-          <span>13112345678</span>
+          <span>收货人：{{addressPage.userName}}</span>
+          <span>{{addressPage.telNumber}}</span>
         </div>
-        <div class="user-address">收货地址：xxxxx</div>
+        <div class="user-address">收货地址：{{addressPage.addressDetail}}</div>
       </div>
       <image class="cart-border" src="/static/images/cart_border@2x.png"></image>
       <div class="shop-name">
@@ -68,12 +68,14 @@
   export default {
     data() {
       return {
-        cartListPage: []
+        cartListPage: [],
+        addressPage: {} // 页面中的地址信息
       };
     },
     onLoad() {
       // 2.1 首先从本地读取购物车数据，根据该数据判断是否有数据，如果有就展示数据，如果没有就显示购物车为空
       this.cartListPage = wx.getStorageSync("cartList") || [];
+      this.addressPage = wx.getStorageSync("addressInfo") || {};
     },
     methods: {
       // 跳转到首页
@@ -81,6 +83,28 @@
         wx.switchTab({
           url: "/pages/index/main"
         });
+      },
+      // 点击添加地址
+      addAddress() {
+        wx.chooseAddress({
+          success: res => {
+            // 给addressPage添加属性
+            this.addressPage = {
+              userName: res.userName,
+              telNumber: res.telNumber,
+              addressDetail:
+                res.provinceName + res.cityName + res.countyName + res.detailInfo
+            };
+            // 将地址保存在本地
+            wx.setStorageSync("addressInfo", this.addressPage);
+          }
+        });
+      }
+    },
+    computed: {
+      addressIsEmpty() {
+        // Object.keys()获取对象中的key，将这些key组成一个数组，类似于['userName', 'telNumber', 'addressDetail']
+        return Object.keys(this.addressPage).length === 0;
       }
     }
   };
