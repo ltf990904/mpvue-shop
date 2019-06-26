@@ -108,6 +108,13 @@
           // 不存在
           this.cartListPage[idx].counts += 1;
         }
+        // 添加提示信息
+        wx.showToast({
+          title: '添加成功',
+          icon: 'success',
+          duration: 2000,
+          mask: true
+        })
         // 1.3 将新的数据重新保存到本地
         wx.setStorageSync("cartList", this.cartListPage);
       }
