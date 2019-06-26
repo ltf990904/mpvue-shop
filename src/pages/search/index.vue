@@ -4,7 +4,7 @@
       <div class="search-box">
         <!-- mpvue中可以使用原生小程序组件，下面使用icon组件 -->
         <icon type="search" size="16"/>
-        <input type="text" placeholder="请输入搜索内容" v-model="inputVal">
+        <input type="text" placeholder="请输入搜索内容" v-model="inputVal" @confirm="jumpToSearchList">
       </div>
       <button size="mini" v-if="inputVal" @click="inputVal=''">取消</button>
     </div>
@@ -28,6 +28,15 @@
       return {
         inputVal: ""
       };
+    },
+    methods: {
+      jumpToSearchList() {
+        // 跳转到搜索列表页，并携带上参数 query=this.inputVal
+        // 非tabBar的页面可以使用wx.navigateTo()跳转，tabBar页面使用wx.switchTab()跳转
+        wx.navigateTo({
+          url: "/pages/search-list/main?query=" + this.inputVal
+        });
+      }
     }
   };
 </script>
