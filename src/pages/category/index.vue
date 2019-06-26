@@ -4,12 +4,12 @@
     <div class="category-body">
       <!-- 左边 -->
       <div class="body-left">
-        <div
-          class="body-left-item"
-          :class="currentIndex === index ? 'active' : ''"
-          v-for="(item, index) in cates"
-          :key="index"
-          @click="handleLeftClick(index)"
+        <div 
+          class="body-left-item" 
+          :class="currentIndex === index ? 'active' : ''" 
+          v-for="(item, index) in cates" 
+          :key="index" 
+          @tap="handleLeftClick(index)"
         >{{item.cat_name}}</div>
       </div>
       <!-- 右边 -->

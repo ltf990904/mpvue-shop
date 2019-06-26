@@ -9,12 +9,12 @@
     </div>
     <!-- 搜索tab栏 -->
     <div class="search-tab">
-      <div
-        class="tab-item"
-        :class="currentIndex === index ? 'active' : ''"
-        v-for="(item, index) in tabName"
-        :key="index"
-        @click="handleTabclick(index)"
+      <div 
+        class="tab-item" 
+        :class="currentIndex === index ? 'active' : ''" 
+        v-for="(item, index) in tabName" 
+        :key="index" 
+        @tap="handleTabclick(index)"
       >{{item}}</div>
     </div>
     <!-- 搜索列表 -->

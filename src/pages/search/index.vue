@@ -6,7 +6,7 @@
         <icon type="search" size="16"/>
         <input type="text" placeholder="请输入搜索内容" v-model="inputVal" @confirm="jumpToSearchList">
       </div>
-      <button size="mini" v-if="inputVal" @click="inputVal=''">取消</button>
+      <button size="mini" v-if="inputVal" @tap="inputVal=''">取消</button>
     </div>
 
     <!-- 历史搜索标题 -->
@@ -17,7 +17,7 @@
 
     <!-- 搜索历史列表 -->
     <div class="history-list">
-      <span class="history-item" v-for="(item, index) in 6" :key="index">小米手机</span>
+      <span class="history-item" v-for="(item, index) in historyData" :key="index">{{item}}</span>
     </div>
   </div>
 </template>
@@ -26,8 +26,13 @@
   export default {
     data() {
       return {
-        inputVal: ""
+        inputVal: "",
+        historyData: [] // 存储历史搜索数据
       };
+    },
+    onLoad () {
+      // 页面加载先从本地获取数据，没有就给空数组
+      this.historyData = wx.getStorageSync('historyData') || []
     },
     methods: {
       jumpToSearchList() {
@@ -36,6 +41,9 @@
         wx.navigateTo({
           url: "/pages/search-list/main?query=" + this.inputVal
         });
+        this.historyData.push(this.inputVal)
+        // 将用户输入的值添加到本地存储中
+        wx.setStorageSync('historyData', this.historyData)
       }
     }
   };
@@ -82,10 +90,11 @@
     padding: 20rpx;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-content: flex-start;
     .history-item {
       margin-bottom: 20rpx;
+      margin-right: 20rpx;
       padding: 20rpx;
       background: #dddddd;
       height: 60rpx;
