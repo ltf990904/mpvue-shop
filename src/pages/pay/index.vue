@@ -16,9 +16,7 @@
       <div class="cart-list">
         <div class="cart-list-item" v-for="(item, index) in selectGoods" :key="index">
           <div class="cart-goods-info">
-            <image
-              :src="item.goods_small_logo"
-            ></image>
+            <image :src="item.goods_small_logo" mode="aspectFill"></image>
             <div class="goods-info-box">
               <h3>{{item.goods_name}}</h3>
               <div class="info-box-bottom">
@@ -34,39 +32,90 @@
     </div>
 
     <div class="total-price">合计：￥{{totalPrice}}</div>
-    <button type="primary">微信支付</button>
+    <button type="primary" @tap="wxPay">微信支付</button>
   </div>
 </template>
 
 <script>
+  import request from "@/utils/request";
   export default {
-    data () {
+    data() {
       return {
         cartListPage: [],
-        addressInfoPage: {}
+        addressInfoPage: {},
+        orderNumber: 0
+      };
+    },
+    methods: {
+      wxPay() {
+        let header = {
+          Authorization: wx.getStorageSync("token") || ""
+        };
+        // 订单支付生成预付订单
+        request
+          .auth(
+            "https://www.zhengzhicheng.cn/api/public/v1/my/orders/req_unifiedorder",
+            { order_number: this.orderNumber },
+            header
+          )
+          .then(res => {
+            // 调用wx.requestPayment()发起微信支付
+            wx.requestPayment({
+              ...res.data.message.pay,
+              order_number: this.orderNumber,
+              success: res => {
+                // 支付成功后弹出支付成功的提示信息
+                wx.showToast({
+                  title: "支付成功",
+                  icon: "success",
+                  duration: 1000,
+                  mask: true,
+                  // 然后跳转到首页
+                  success: () => {
+                    // 注意首页是tabBar页面,需要使用switchTab跳转
+                    setTimeout(() => {
+                      wx.switchTab({
+                        url: "/pages/index/main"
+                      });
+                    }, 2000);
+                    // 将本地的购物车数据中selectStatus状态true的删掉
+                    wx.setStorageSync("cartList", this.notSelectGoods);
+                  }
+                });
+              }
+            });
+          });
       }
     },
-    onShow () {
-      this.cartListPage = wx.getStorageSync('cartList') || []
-      this.addressInfoPage = wx.getStorageSync('addressInfo')
+    onLoad(options) {
+      // 获取orderNumber
+      this.orderNumber = options.order_number;
+    },
+    onShow() {
+      this.cartListPage = wx.getStorageSync("cartList") || [];
+      this.addressInfoPage = wx.getStorageSync("addressInfo");
     },
     // 利用属性将上面cartListPage中selectStatus为true的数据过滤出来
     computed: {
-      selectGoods () {
+      selectGoods() {
         // filter函数的作用是,过滤数组,将满足过滤条件的数组项取出来,放到一个新的数组中
-        return this.cartListPage.filter(item => item.selectStatus)
+        return this.cartListPage.filter(item => item.selectStatus);
       },
-      totalPrice () {
-        let total = 0
+      notSelectGoods() {
+        // filter函数的作用是,过滤数组,将满足过滤条件的数组项取出来,放到一个新的数组中
+        return this.cartListPage.filter(item => !item.selectStatus);
+      },
+      totalPrice() {
+        let total = 0;
         this.cartListPage.map(item => {
           if (item.selectStatus) {
-            total += item.counts * item.goods_price
+            total += item.counts * item.goods_price;
           }
-        })
-        return total
+        });
+        return total;
       }
     }
-  }
+  };
 </script>
 
 <style lang="scss" scoped>
