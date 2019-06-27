@@ -162,6 +162,13 @@
           });
           return false;
         }
+        if (this.totalCount === 0) {
+          wx.showToast({
+            title: '请勾选商品',
+            duration: 1000
+          })
+          return false
+        }
         let header = {
           Authorization: wx.getStorageSync("token") || ""
         };
