@@ -3,10 +3,10 @@
     <div class="cart-body">
       <div class="address">
         <div class="user-info">
-          <span>收货人：xxxx</span>
-          <span>113232323</span>
+          <span>收货人：{{addressInfoPage.userName}}</span>
+          <span>{{addressInfoPage.telNumber}}</span>
         </div>
-        <div class="user-address">收货地址：xxxxx</div>
+        <div class="user-address">收货地址：{{addressInfoPage.addressDetail}}</div>
       </div>
       <image class="cart-border" src="/static/images/cart_border@2x.png"></image>
       <div class="shop-name">
@@ -14,18 +14,17 @@
         <span>优购生活馆</span>
       </div>
       <div class="cart-list">
-        <div class="cart-list-item" v-for="(item, index) in 5" :key="index">
+        <div class="cart-list-item" v-for="(item, index) in selectGoods" :key="index">
           <div class="cart-goods-info">
             <image
-              src="https://img.alicdn.com/imgextra/i4/47537911/TB2k1lrhmXlpuFjy0FeXXcJbFXa_!!47537911-0-beehive-scenes.jpg_180x180xzq90.jpg_.webp"
-              mode="aspectFill"
+              :src="item.goods_small_logo"
             ></image>
             <div class="goods-info-box">
-              <h3>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h3>
+              <h3>{{item.goods_name}}</h3>
               <div class="info-box-bottom">
-                <span class="goods-price">$232.00</span>
+                <span class="goods-price">￥{{item.goods_price}}</span>
                 <div class="goods-count">
-                  <span class="count">01</span>
+                  <span class="count">{{item.counts}}</span>
                 </div>
               </div>
             </div>
@@ -34,17 +33,40 @@
       </div>
     </div>
 
-    <div class="total-price">合计：￥ 2222</div>
+    <div class="total-price">合计：￥{{totalPrice}}</div>
     <button type="primary">微信支付</button>
   </div>
 </template>
 
 <script>
   export default {
-    data() {
-      return {};
+    data () {
+      return {
+        cartListPage: [],
+        addressInfoPage: {}
+      }
+    },
+    onShow () {
+      this.cartListPage = wx.getStorageSync('cartList') || []
+      this.addressInfoPage = wx.getStorageSync('addressInfo')
+    },
+    // 利用属性将上面cartListPage中selectStatus为true的数据过滤出来
+    computed: {
+      selectGoods () {
+        // filter函数的作用是,过滤数组,将满足过滤条件的数组项取出来,放到一个新的数组中
+        return this.cartListPage.filter(item => item.selectStatus)
+      },
+      totalPrice () {
+        let total = 0
+        this.cartListPage.map(item => {
+          if (item.selectStatus) {
+            total += item.counts * item.goods_price
+          }
+        })
+        return total
+      }
     }
-  };
+  }
 </script>
 
 <style lang="scss" scoped>

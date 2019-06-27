@@ -155,7 +155,7 @@
       // 去结算
       goToPay() {
         let header = {
-          Authorization: wx.getStorageSync("token")
+          'Authorization': wx.getStorageSync('token') || ''
         };
         request
           .auth(
