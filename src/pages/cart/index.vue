@@ -53,7 +53,7 @@
     <!-- footer -->
     <div class="footer">
       <div class="footer-item item-left">
-        <span class="iconfont iconcheckbox-marked-circ active"></span>
+        <span class="iconfont" :class="isSelectAll ? 'iconcheckbox-marked-circ active' : 'iconcheckbox-blank-circle-outline'"></span>
         <span>全选</span>
       </div>
       <div class="footer-item item-center">
@@ -161,6 +161,17 @@
           }
         });
         return total;
+      },
+      // 控制全选状态的计算属性
+      isSelectAll () {
+        let all = true
+        this.cartListPage.map(item => {
+          // 只要商品数据项中有一个商品的状态是false，那么这个全选按钮的状态就应该是false
+          if (!item.selectStatus) {
+            all = false
+          }
+        })
+        return all
       }
     }
   };
