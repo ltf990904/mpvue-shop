@@ -39,9 +39,9 @@
               <div class="info-box-bottom">
                 <span class="goods-price">￥{{item.goods_price}}</span>
                 <div class="goods-count">
-                  <span class="count-add iconfont iconminus"></span>
+                  <span class="count-add iconfont iconminus" @tap="handleMinus(index)"></span>
                   <span class="count">{{item.counts}}</span>
-                  <span class="count-minus iconfont iconplus"></span>
+                  <span class="count-minus iconfont iconplus" @tap="handlePlus(index)"></span>
                 </div>
               </div>
             </div>
@@ -110,7 +110,31 @@
         // 对当前点击商品状态取反
         this.cartListPage[idx].selectStatus = !this.cartListPage[idx]
           .selectStatus;
-      }
+      },
+      // 点击减
+      handleMinus (idx) {
+        // 如果数量为1，弹一个提示框提示用户是否删除
+        if (this.cartListPage[idx].counts === 1) {
+          wx.showModal({
+            title: '提示',
+            content: '是否删除该商品？',
+            success: (res) => {
+              if (res.confirm) {
+                // 将商品删除掉
+                this.cartListPage.splice(idx, 1)
+              } else if (res.cancel) {
+                return false
+              }
+            }
+          })
+        } else {
+          this.cartListPage[idx].counts -= 1
+        }
+      },
+      // 点击加
+      handlePlus (idx) {
+        this.cartListPage[idx].counts += 1
+      }   
     },
     computed: {
       // 地址是否为空
