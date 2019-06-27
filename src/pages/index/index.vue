@@ -1,16 +1,11 @@
 <template>
   <div>
-    <!-- 搜索框 -->
-    <Search/>
+    <search></search>
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" :autoplay="true" interval="2000">
       <block v-for="(item, index) in sliderList" :key="index">
         <swiper-item>
-          <image 
-            :src="item.image_src" 
-            class="slide-image" 
-            mode="aspectFill"
-          ></image>
+          <image :src="item.image_src" class="slide-image" mode="aspectFill"></image>
         </swiper-item>
       </block>
     </swiper>
@@ -31,18 +26,11 @@
       <!-- 每一个楼层 -->
       <div class="floor-item" v-for="(item, index) in floorList" :key="index">
         <div class="floor-title">
-          <image 
-            :src="item.floor_title.image_src" 
-            class="slide-image" 
-            mode="aspectFill"
-          ></image>
+          <image :src="item.floor_title.image_src" class="slide-image" mode="aspectFill"></image>
         </div>
         <div class="floor-content">
           <div class="content-left">
-            <image 
-              :src="item.product_list[0].image_src" class="slide-image" 
-              mode="aspectFill"
-            ></image>
+            <image :src="item.product_list[0].image_src" class="slide-image" mode="aspectFill"></image>
           </div>
           <div class="content-right">
             <image
@@ -57,12 +45,17 @@
         </div>
       </div>
     </div>
+    <!-- 返回顶部 -->
+    <div class="go-to-top" @tap="gotoTop" v-if="showTop">
+      <span>＿</span>
+      <span class="arrow">↑</span>
+    </div>
   </div>
 </template>
 
 <script>
   import request from "../../utils/request.js";
-  import Search from '../../components/search'
+  import Search from "../../components/search";
   export default {
     components: {
       Search
@@ -71,13 +64,23 @@
       return {
         sliderList: [], // 轮播图数组
         navList: [], // 导航分类
-        floorList: [] // 楼层列表
+        floorList: [], // 楼层列表
+        showTop: false
       };
     },
     mounted() {
       this.getData();
     },
+    onPageScroll(obj) {
+      this.showTop = !!(obj.scrollTop > 50);
+    },
     methods: {
+      gotoTop() {
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 300
+        });
+      },
       // 获取轮播图/获取分类/获取楼层
       async getData() {
         try {
@@ -111,7 +114,6 @@
 
 <style lang="scss" scoped>
   @import "../../styles/val.scss";
-  
   .slide-image {
     width: 750rpx;
     height: 230rpx * $unit;
@@ -141,10 +143,9 @@
       }
       display: flex;
       .content-left {
-        flex: 1;
         display: flex;
         align-items: center;
-        margin-right: 8rpx;
+        margin-right: 15rpx;
         image {
           width: 150rpx * $unit;
           height: 250rpx * $unit;
@@ -157,11 +158,29 @@
         justify-content: space-between;
         align-content: space-between;
         image {
-          border-bottom: 4rpx solid #fff;
           width: 155rpx * $unit;
           height: 125rpx * $unit;
         }
       }
+    }
+  }
+  .go-to-top {
+    position: fixed;
+    bottom: 50rpx;
+    right: 0rpx;
+    font-size: 16px;
+    color: #fff;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 8rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    
+    .arrow{
+      margin-bottom: 30rpx;
     }
   }
 </style>
