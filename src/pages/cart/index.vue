@@ -53,7 +53,10 @@
     <!-- footer -->
     <div class="footer">
       <div class="footer-item item-left" @tap="toggleAllStatus">
-        <span class="iconfont" :class="isSelectAll ? 'iconcheckbox-marked-circ active' : 'iconcheckbox-blank-circle-outline'"></span>
+        <span
+          class="iconfont"
+          :class="isSelectAll ? 'iconcheckbox-marked-circ active' : 'iconcheckbox-blank-circle-outline'"
+        ></span>
         <span>全选</span>
       </div>
       <div class="footer-item item-center">
@@ -63,13 +66,13 @@
         </div>
         <div class="express">包含运费</div>
       </div>
-      <div class="footer-item item-right"  @tap="goToPay">结算({{totalCount}})</div>
+      <div class="footer-item item-right" @tap="goToPay">结算({{totalCount}})</div>
     </div>
   </div>
 </template>
 
 <script>
-  import request from '@/utils/request'
+  import request from "@/utils/request";
   export default {
     data() {
       return {
@@ -84,8 +87,8 @@
       this.addressPage = wx.getStorageSync("addressInfo") || {};
     },
     // 在购物车页面隐藏的时候，去设置本地存储中购物车的数据
-    onHide () {
-      wx.setStorageSync('cartList', this.cartListPage)
+    onHide() {
+      wx.setStorageSync("cartList", this.cartListPage);
     },
     methods: {
       // 跳转到首页
@@ -117,60 +120,72 @@
           .selectStatus;
       },
       // 点击减
-      handleMinus (idx) {
+      handleMinus(idx) {
         // 如果数量为1，弹一个提示框提示用户是否删除
         if (this.cartListPage[idx].counts === 1) {
           wx.showModal({
-            title: '提示',
-            content: '是否删除该商品？',
-            success: (res) => {
+            title: "提示",
+            content: "是否删除该商品？",
+            success: res => {
               if (res.confirm) {
                 // 将商品删除掉
-                this.cartListPage.splice(idx, 1)
+                this.cartListPage.splice(idx, 1);
               } else if (res.cancel) {
-                return false
+                return false;
               }
             }
-          })
+          });
         } else {
-          this.cartListPage[idx].counts -= 1
+          this.cartListPage[idx].counts -= 1;
         }
       },
       // 点击加
-      handlePlus (idx) {
-        this.cartListPage[idx].counts += 1
+      handlePlus(idx) {
+        this.cartListPage[idx].counts += 1;
       },
       // 切换所有商品的状态
-      toggleAllStatus () {
+      toggleAllStatus() {
         // 获取到当前全选按钮的状态
-        let currentAllStatus = this.isSelectAll
+        let currentAllStatus = this.isSelectAll;
         this.cartListPage.map(item => {
           // 对所有商品项状态取反
-          item.selectStatus = !currentAllStatus
-        })
+          item.selectStatus = !currentAllStatus;
+        });
       },
       // 去结算
-      goToPay () {
-        request.auth('https://www.zhengzhicheng.cn/api/public/v1/my/orders/create', {
-          'order_price': 0.1,
-          'consignee_addr': '广州市天河区',
-          'order_detail':
-      '[{"goods_id":55578,"goods_name":"初语2017秋装新款潮牌女装加绒宽松BF风慵懒卫衣女套头连帽上衣","goods_price":279,"goods_small_logo":"http://image2.suning.cn/uimg/b2c/newcatentries/0070067836-000000000690453616_2_400x400.jpg","counts":1,"selectStatus":true}]',
-          'goods': [
+      goToPay() {
+        let header = {
+          Authorization: wx.getStorageSync("token")
+        };
+        request
+          .auth(
+            "https://www.zhengzhicheng.cn/api/public/v1/my/orders/create",
             {
-              'goods_id': 5,
-              'goods_number': 11,
-              'goods_price': 15
-            }
-          ]
-        })
+              order_price: 0.1,
+              consignee_addr: "广州市天河区",
+              order_detail:
+                '[{"goods_id":55578,"goods_name":"初语2017秋装新款潮牌女装加绒宽松BF风慵懒卫衣女套头连帽上衣","goods_price":279,"goods_small_logo":"http://image2.suning.cn/uimg/b2c/newcatentries/0070067836-000000000690453616_2_400x400.jpg","counts":1,"selectStatus":true}]',
+              goods: [
+                {
+                  goods_id: 5,
+                  goods_number: 11,
+                  goods_price: 15
+                }
+              ]
+            },
+            header
+          )
           .then(res => {
-            console.log(res)
+            let orderNumber = res.data.message.order_number;
+            // 获取到orderNumber之后,就需要跳转到结算页面去
+            wx.navigateTo({
+              url: "/pages/pay/main?order_number=" + orderNumber
+            });
           })
           .catch(err => {
-            console.log(err)
-          })
-      }      
+            console.log(err);
+          });
+      }
     },
     computed: {
       // 地址是否为空
@@ -199,15 +214,15 @@
         return total;
       },
       // 控制全选状态的计算属性
-      isSelectAll () {
-        let all = true
+      isSelectAll() {
+        let all = true;
         this.cartListPage.map(item => {
           // 只要商品数据项中有一个商品的状态是false，那么这个全选按钮的状态就应该是false
           if (!item.selectStatus) {
-            all = false
+            all = false;
           }
-        })
-        return all
+        });
+        return all;
       }
     }
   };
