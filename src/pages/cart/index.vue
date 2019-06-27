@@ -25,8 +25,12 @@
       </div>
       <div class="cart-list">
         <div class="cart-list-item" v-for="(item, index) in cartListPage" :key="index">
-          <div class="cart-goods-status">
-            <span class="iconfont iconcheckbox-marked-circ active"></span>
+          <div class="cart-goods-status" @tap="changeCurrentStatus(index)">
+            <!-- 商品的选中与否的状态，必须根据该商品selectStatus动态添加样式 -->
+            <span
+              class="iconfont"
+              :class="item.selectStatus ? 'iconcheckbox-marked-circ active': 'iconcheckbox-blank-circle-outline'"
+            ></span>
           </div>
           <div class="cart-goods-info">
             <image :src="item.goods_small_logo" mode="aspectFill"></image>
@@ -100,6 +104,12 @@
             wx.setStorageSync("addressInfo", this.addressPage);
           }
         });
+      },
+      // 更改商品状态
+      changeCurrentStatus(idx) {
+        // 对当前点击商品状态取反
+        this.cartListPage[idx].selectStatus = !this.cartListPage[idx]
+          .selectStatus;
       }
     },
     computed: {

@@ -65,9 +65,9 @@
       jumpToSearchList() {
         // 跳转到搜索列表页，并携带上参数 query=this.inputVal
         // 非tabBar的页面可以使用wx.navigateTo()跳转，tabBar页面使用wx.switchTab()跳转
-        // wx.navigateTo({
-        //   url: '/pages/search-list/main?query=' + this.inputVal
-        // })
+        wx.navigateTo({
+          url: '/pages/search-list/main?query=' + this.inputVal
+        })
         this.historyData.unshift(this.inputVal);
         // 将数据添加进去之后，需要将数据去重，利用es6的Set类型
         let mySet = new Set(this.historyData);
