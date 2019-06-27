@@ -6,7 +6,8 @@
     "pages/mine/main",
     "pages/search-list/main",
     "pages/goods-detail/main",
-    "pages/search/main"
+    "pages/search/main",
+    "pages/login/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

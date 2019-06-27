@@ -63,12 +63,13 @@
         </div>
         <div class="express">包含运费</div>
       </div>
-      <div class="footer-item item-right">结算({{totalCount}})</div>
+      <div class="footer-item item-right"  @tap="goToPay">结算({{totalCount}})</div>
     </div>
   </div>
 </template>
 
 <script>
+  import request from '@/utils/request'
   export default {
     data() {
       return {
@@ -147,7 +148,29 @@
           // 对所有商品项状态取反
           item.selectStatus = !currentAllStatus
         })
-      }   
+      },
+      // 去结算
+      goToPay () {
+        request.auth('https://www.zhengzhicheng.cn/api/public/v1/my/orders/create', {
+          'order_price': 0.1,
+          'consignee_addr': '广州市天河区',
+          'order_detail':
+      '[{"goods_id":55578,"goods_name":"初语2017秋装新款潮牌女装加绒宽松BF风慵懒卫衣女套头连帽上衣","goods_price":279,"goods_small_logo":"http://image2.suning.cn/uimg/b2c/newcatentries/0070067836-000000000690453616_2_400x400.jpg","counts":1,"selectStatus":true}]',
+          'goods': [
+            {
+              'goods_id': 5,
+              'goods_number': 11,
+              'goods_price': 15
+            }
+          ]
+        })
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }      
     },
     computed: {
       // 地址是否为空
