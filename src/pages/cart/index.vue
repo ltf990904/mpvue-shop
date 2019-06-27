@@ -52,7 +52,7 @@
 
     <!-- footer -->
     <div class="footer">
-      <div class="footer-item item-left">
+      <div class="footer-item item-left" @tap="toggleAllStatus">
         <span class="iconfont" :class="isSelectAll ? 'iconcheckbox-marked-circ active' : 'iconcheckbox-blank-circle-outline'"></span>
         <span>全选</span>
       </div>
@@ -134,6 +134,15 @@
       // 点击加
       handlePlus (idx) {
         this.cartListPage[idx].counts += 1
+      },
+      // 切换所有商品的状态
+      toggleAllStatus () {
+        // 获取到当前全选按钮的状态
+        let currentAllStatus = this.isSelectAll
+        this.cartListPage.map(item => {
+          // 对所有商品项状态取反
+          item.selectStatus = !currentAllStatus
+        })
       }   
     },
     computed: {
