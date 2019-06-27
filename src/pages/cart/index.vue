@@ -63,7 +63,7 @@
         </div>
         <div class="express">包含运费</div>
       </div>
-      <div class="footer-item item-right">计算({{totalCount}})</div>
+      <div class="footer-item item-right">结算({{totalCount}})</div>
     </div>
   </div>
 </template>
@@ -81,6 +81,10 @@
       // 2.1 首先从本地读取购物车数据，根据该数据判断是否有数据，如果有就展示数据，如果没有就显示购物车为空
       this.cartListPage = wx.getStorageSync("cartList") || [];
       this.addressPage = wx.getStorageSync("addressInfo") || {};
+    },
+    // 在购物车页面隐藏的时候，去设置本地存储中购物车的数据
+    onHide () {
+      wx.setStorageSync('cartList', this.cartListPage)
     },
     methods: {
       // 跳转到首页
