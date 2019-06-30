@@ -2,7 +2,7 @@
   <div>
     <!-- 空购物车 -->
     <div class="empty-cart" v-if="cartListPage.length === 0">
-      <image src="/static/images/cart_empty@2x.png" mode="aspectFill"></image>
+      <image src="/static/images/cart_empty@2x.png" mode="aspectFill" />
       <div class="empty-cart-text">购物车还是空的</div>
       <div class="shop-btn" @tap="goToIndex">去逛逛</div>
     </div>
@@ -18,7 +18,7 @@
         </div>
         <div class="user-address">收货地址：{{addressPage.addressDetail}}</div>
       </div>
-      <image class="cart-border" src="/static/images/cart_border@2x.png"></image>
+      <image class="cart-border" src="/static/images/cart_border@2x.png" />
       <div class="shop-name">
         <span class="iconfont iconshop"></span>
         <span>优购生活馆</span>
@@ -33,7 +33,7 @@
             ></span>
           </div>
           <div class="cart-goods-info">
-            <image :src="item.goods_small_logo" mode="aspectFill"></image>
+            <image :src="item.goods_small_logo" mode="aspectFill" />
             <div class="goods-info-box">
               <h3>{{item.goods_name}}</h3>
               <div class="info-box-bottom">
@@ -66,7 +66,7 @@
         </div>
         <div class="express">包含运费</div>
       </div>
-      <div class="footer-item item-right" @tap="goToPay">结算({{totalCount}})</div>
+      <div class="footer-item item-right" @tap="goToPay">去结算({{totalCount}})</div>
     </div>
   </div>
 </template>
@@ -164,10 +164,10 @@
         }
         if (this.totalCount === 0) {
           wx.showToast({
-            title: '请勾选商品',
+            title: "请勾选商品",
             duration: 1000
-          })
-          return false
+          });
+          return false;
         }
         let header = {
           Authorization: wx.getStorageSync("token") || ""
