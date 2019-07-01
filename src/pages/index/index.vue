@@ -2,10 +2,10 @@
   <div>
     <search></search>
     <!-- 轮播图 -->
-    <swiper :indicator-dots="true" :autoplay="true" interval="2000">
+    <swiper :indicator-dots="true" :autoplay="true" interval="2000" :circular="true">
       <block v-for="(item, index) in sliderList" :key="index">
         <swiper-item>
-          <image :src="item.image_src" class="slide-image" mode="aspectFill"></image>
+          <image :src="item.image_src" class="slide-image" mode="aspectFill" />
         </swiper-item>
       </block>
     </swiper>
@@ -18,7 +18,7 @@
         mode="aspectFill"
         v-for="(item, index) in navList"
         :key="index"
-      ></image>
+      />
     </div>
 
     <!-- 楼层 -->
@@ -26,11 +26,11 @@
       <!-- 每一个楼层 -->
       <div class="floor-item" v-for="(item, index) in floorList" :key="index">
         <div class="floor-title">
-          <image :src="item.floor_title.image_src" class="slide-image" mode="aspectFill"></image>
+          <image :src="item.floor_title.image_src" class="slide-image" mode="aspectFill" />
         </div>
         <div class="floor-content">
           <div class="content-left">
-            <image :src="item.product_list[0].image_src" class="slide-image" mode="aspectFill"></image>
+            <image :src="item.product_list[0].image_src" class="slide-image" mode="aspectFill" />
           </div>
           <div class="content-right">
             <image
@@ -40,7 +40,7 @@
               mode="aspectFill"
               v-for="(subitem, idx) in item.product_list"
               :key="idx"
-            ></image>
+            />
           </div>
         </div>
       </div>
@@ -178,8 +178,8 @@
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.6);
-    
-    .arrow{
+
+    .arrow {
       margin-bottom: 30rpx;
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 轮播图 -->
-    <swiper :indicator-dots="true" :autoplay="true" interval="2000">
+    <swiper :indicator-dots="true" :autoplay="true" interval="2000" :circular="true">
       <block v-for="(item, index) in goodsDetail.pics" :key="index">
         <swiper-item>
           <image :src="item.pics_big" class="slide-image" mode="aspectFill"></image>

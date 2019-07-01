@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="input-wrapper">
-      <div class="search-box">
+      <div class="search-box" @click="jumpToSearch">
         <!-- mpvue中可以使用原生小程序组件，下面使用icon组件 -->
         <icon type="search" size="16"/>
         {{keyword}}
@@ -83,6 +83,11 @@
           // this.goodsList = [...this.goodsList, ...res.data.message.goods];
           this.goodsList = this.goodsList.concat(res.data.message.goods)
         });
+      },
+      jumpToSearch () {
+        wx.navigateTo({
+          url: '/pages/search/main'
+        })
       }
     },
     // 小程序原生的生命周期函数，照样能在mpvue中使用
